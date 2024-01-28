@@ -1,18 +1,11 @@
 import mysql from "mysql2";
 
-// const db = mysql.createConnection({
-// 	host: "localhost",
-// 	user: "root",
-// 	password: "",
-// 	database: "betflix",
-// });
-
 //DB Server
 const db = mysql.createConnection({
-	host: '13.211.31.132',     // หรือ IP ของ MySQL server
-	user: 'admin',           // ชื่อผู้ใช้ MySQL
-	password: 'Test123456', // รหัสผ่าน MySQL
-	database: 'betflix'     // ชื่อฐานข้อมูล MySQL
+	host: process.env.DB_HOST || 'localhost',     // หรือ IP ของ MySQL server
+	user: process.env.DB_USER || 'root',           // ชื่อผู้ใช้ MySQL
+	password: process.env.DB_PASSWORD || '', // รหัสผ่าน MySQL
+	database: process.env.DB_NAME || 'betflix',     // ชื่อฐานข้อมูล MySQL
 });
 
 // เชื่อมต่อ MySQL
