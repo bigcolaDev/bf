@@ -23,10 +23,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("tiny"));
 app.use(cors());
 
-//Routes (Dynamic import)
+// Auto import Routes
 fs.readdirSync("./routes").map((route) => {
 	import(`./routes/${route}`).then((routeFile) => {
-		app.use("/api/v1", routeFile.default);
+		app.use(routeFile.default);
 	});
 });
 

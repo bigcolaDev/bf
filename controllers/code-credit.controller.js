@@ -141,7 +141,7 @@ const CodeController = {
                                                                     async (error, _) => {
                                                                         if (error) throw error;
                                                                         await axios.post(
-                                                                            `${process.env.SERVER_URL}/api/v1/users/balance`,
+                                                                            `${process.env.SERVER_URL}/users/balance`,
                                                                             {
                                                                                 username: req.body.username,
                                                                             },
@@ -152,7 +152,7 @@ const CodeController = {
                                                                             }
                                                                         );
                                                                         await axios.post(
-                                                                            `${process.env.SERVER_URL}/api/v1/users/current`,
+                                                                            `${process.env.SERVER_URL}/users/current`,
                                                                             {
                                                                                 username: req.body.username,
                                                                             },

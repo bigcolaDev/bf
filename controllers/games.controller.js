@@ -306,7 +306,7 @@ const GamesController = {
 											async (error, _) => {
 												if (error) throw error;
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/current`,
+													`${process.env.SERVER_URL}/users/current`,
 													{
 														username: req.body.username,
 													},
@@ -317,7 +317,7 @@ const GamesController = {
 													}
 												);
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/balance`,
+													`${process.env.SERVER_URL}/users/balance`,
 													{
 														username: req.body.username,
 													},
@@ -329,11 +329,11 @@ const GamesController = {
 												);
 
 												await axios.get(
-													`${process.env.SERVER_URL}/api/v1/users/logs/all`,
+													`${process.env.SERVER_URL}/users/logs/all`,
 												);
 
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/logs`,
+													`${process.env.SERVER_URL}/users/logs`,
 													{
 														username: req.body.username,
 													},

@@ -162,8 +162,8 @@ const SettingController = {
         }
     },
 
-    // ฟังก์ชัน สร้าง การตั้งค่า ข่าวสาร
-    CreateNews: async (req, res) => { 
+    // ฟังก์ชัน สร้าง การตั้งค่า notify
+    CreateNotify: async (req, res) => { 
         try {
             db.query(
                 `SELECT * FROM setting WHERE type = ?`,
@@ -173,7 +173,8 @@ const SettingController = {
                         return console.log(err);
                     }
                     const data = {
-                        news: req.body.news
+                        title : req.body.title,
+                        notify: req.body.notify
                     };
                     if (result.length === 0) {
                         db.query(

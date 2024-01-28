@@ -314,7 +314,7 @@ const AuthController = {
 							res.header("Authorization", `Bearer ${token}`);
 							res.send({ status: "success", token });
 							await axios.get(
-								`${process.env.SERVER_URL}/api/v1/users/logs/all`,
+								`${process.env.SERVER_URL}/users/logs/all`,
 							);
 						},
 					);

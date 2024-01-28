@@ -179,7 +179,7 @@ const TransferController = {
 												);
 											}
 											await axios.post(
-												`${process.env.SERVER_URL}/api/v1/users/balance`,
+												`${process.env.SERVER_URL}/users/balance`,
 												{
 													username: req.body.username,
 												},
@@ -260,7 +260,7 @@ const TransferController = {
 									if (error) throw error;
 									res.send({ status: "success", message: "อัพเดทสถานะการถอนเงินเรียบร้อย." });
 									await axios.post(
-										`${process.env.SERVER_URL}/api/v1/users/balance`,
+										`${process.env.SERVER_URL}/users/balance`,
 										{
 											username: req.body.username,
 										},
@@ -444,7 +444,7 @@ const TransferController = {
 										);
 										res.send({ status: "success", message: "แจ้งถอนเงินเรียบร้อย." });
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/balance`,
+											`${process.env.SERVER_URL}/users/balance`,
 											{
 												username: req.body.username,
 											},
@@ -526,7 +526,7 @@ const TransferController = {
 											);
 											res.send({ status: "success", message: "แจ้งถอนเงินเรียบร้อย." });
 											await axios.post(
-												`${process.env.SERVER_URL}/api/v1/users/balance`,
+												`${process.env.SERVER_URL}/users/balance`,
 												{
 													username: req.body.username,
 												},
@@ -571,7 +571,7 @@ const TransferController = {
 											);
 											res.send({ status: "success", message: "แจ้งถอนเงินเรียบร้อย." });
 											await axios.post(
-												`${process.env.SERVER_URL}/api/v1/users/balance`,
+												`${process.env.SERVER_URL}/users/balance`,
 												{
 													username: req.body.username,
 												},
@@ -618,7 +618,7 @@ const TransferController = {
 										);
 										res.send({ status: "success", message: "แจ้งถอนเงินเรียบร้อย." });
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/balance`,
+											`${process.env.SERVER_URL}/users/balance`,
 											{
 												username: req.body.username,
 											},
@@ -805,41 +805,44 @@ const TransferController = {
 //ไทยพาณิชย์
 // cron.schedule("*/20 * * * * *", async () => {
 // 	try {
-// 		//ฟังก์ชันเรียกดูข้อมูล Table
+// 		// Function to retrieve data from the table
 // 		function getTable(table) {
 // 			return new Promise((resolve, reject) => {
-// 				db.query(`SELECT * FROM  ${table}`, (error, table) => {
+// 				db.query(`SELECT * FROM ${table}`, (error, table) => {
 // 					if (error) reject(error);
 // 					resolve(table);
 // 				});
 // 			});
-// 		};
+// 		}
+
 // 		const deposit = await getTable("deposit");
 // 		const setting = await getTable("setting");
 // 		const users = await getTable("users");
 
-// 		//ฟังก์ชันเรียกดูข้อมูล SCB
+// 		// Function to retrieve data from SCB
 // 		function getScb() {
-// 			return new Promise((resolve, reject) => {
+// 			return new Promise((resolve, _reject) => {
 // 				const config = {
 // 					method: "GET",
 // 					url: "http://122.248.204.147:8080/scb-api",
 // 				};
 // 				axios(config).then(async (response) => {
 // 					resolve(response.data.transactions);
-// 				}
-// 				);
-// 			}
-// 			);
-
-// 		};
+// 				});
+// 			});
+// 		}
 
 // 		const scb = await getScb();
 // 		if (scb === undefined) return false;
 
-// 		//Logic การฝากเงิน
+// 		// Logic for deposit transactions
 // 		const transactions = scb.filter((item) => item.type.description === "ฝากเงิน");
-// 		const transDep = transactions.filter((item) => !deposit.map((item) => item.referenceNo).includes(item.txHash.match(/\d/g).join("")));
+// 		const transDep = transactions.filter((item) =>
+// 			deposit.map((d) => parseFloat(d.amount).toFixed(2) !== parseFloat(item.amount).toFixed(2)) &&
+// 			!deposit.map((d) => d.referenceNo).includes(item.txHash.match(/\d/g).join("")) &&
+// 			!deposit.map((d) => d.createdAt).includes(item.dateTime)
+// 		);
+
 // 		transDep.map(async (item) => {
 // 			const bankslist = bankList.filter((bank) => bank.initials === item.remark.bank);
 // 			const banks = bankslist.map((item) => item.shortname);
@@ -894,28 +897,27 @@ const TransferController = {
 // 										);
 // 									}
 // 								);
-// 							});
-// 						} else {
-// 							console.log({
-// 								username: username,
-// 								amount: parseFloat(amount),
-// 								limit: limit.min,
-// 							});
+// 							}
+// 							);
 // 						}
-// 					});
+// 					}
+// 				);
 // 			}
 
 // 			await user.map(async (user) => {
 // 				if (parseFloat(item.amount) < parseFloat(limit.min)) {
 // 					SAVE("not-auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(item.amount), item.txHash.match(/\d/g).join(""), 0, item.dateTime);
+// 					return false;
 // 				} else if (parseFloat(item.amount) > parseFloat(limit.max)) {
 // 					SAVE("not-auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(item.amount), item.txHash.match(/\d/g).join(""), 0, item.dateTime);
+// 					return false;
 // 				} else {
 // 					if (user.promotion === 1 && user.running === 0) {
 // 						if (user.depositType === "ตรงยอด") {
 // 							if (parseFloat(item.amount) === parseFloat(user.deposit)) {
 // 								SAVE("auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(user.maxBonus), item.txHash.match(/\d/g).join(""), 1, item.dateTime);
 // 							}
+// 							return false;
 // 						} else if (user.depositType === "ต่ำกว่า") {
 // 							if (parseFloat(item.amount) <= parseFloat(user.deposit)) {
 // 								const detail = qs.stringify({
@@ -941,13 +943,15 @@ const TransferController = {
 // 									SAVE("auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(user.maxBonus), item.txHash.match(/\d/g).join(""), 1, item.dateTime);
 // 								});
 // 							}
+// 							return false;
 // 						}
-// 					} else {
-// 						SAVE("auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(item.amount), item.txHash.match(/\d/g).join(""), 1, item.dateTime);
+// 						return false;
 // 					}
+// 					SAVE("auto", user.username, user.name, user.bankName, user.bankNumber, user.bankCode, "ไทยพาณิชย์", parseFloat(item.amount), item.txHash.match(/\d/g).join(""), 1, item.dateTime);
 // 				}
 // 			});
 // 		});
+
 // 	} catch (error) {
 // 		console.log(error);
 // 	}
@@ -955,211 +959,211 @@ const TransferController = {
 
 
 //true wallet
-cron.schedule("* * * * * *", async () => {
-	try {
-		db.query("SELECT * FROM deposit", async (error, deposit) => {
-			if (error) throw error;
-			const config = {
-				method: "GET",
-				url: "http://122.248.204.147:3003",
-			};
-			await axios(config).then(async (response) => {
-				const tw = response.data;
-				await tw.map(async (item) => {
-					db.query("SELECT * FROM setting", async (error, setting) => {
-						if (error) throw error;
-						const limitDeposit = await setting.filter((item) => item.type === "limit_deposit");
-						if (!limitDeposit[0]) return false;
-						const data = await JSON.parse(limitDeposit[0].data);
-						if (!deposit.map((item) => item.referenceNo).includes(item.received_time.match(/\d/g).join(""))) {
-							db.query("SELECT * FROM users", async (error, users) => {
-								if (error) throw error;
-								await users.map(async (user) => {
-									if (user.tel === item.sender) {
-										if (parseFloat(item.amount) < parseFloat(data.min)) {
-											db.query(
-												"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
-												["not-auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 0, item.received_time],
-												async () => {
-													return console.log({
-														username: user.username,
-														amount: parseFloat(item.amount),
-														limit: data.min,
-													});
-												});
-										} else if (parseFloat(item.amount) > parseFloat(data.max)) {
-											db.query(
-												"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
-												["not-auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 0, item.received_time],
-												async () => {
-													return console.log({
-														username: user.username,
-														amount: parseFloat(item.amount),
-														limit: data.max,
-													});
-												});
-										} else {
-											if (user.promotion === 1 && user.running === 0) {
-												if (user.depositType === "ตรงยอด") {
-													if (parseFloat(item.amount) === parseFloat(user.deposit)) {
-														const detail = qs.stringify({
-															username: `${process.env.UPLINE}${user.username.substring(2)}`,
-															amount: parseFloat(user.maxBonus),
-															ref: item.received_time.match(/\d/g).join(""),
-														});
-														const config = {
-															method: "POST",
-															maxBodyLength: Infinity,
-															url: `${process.env.API_URL}/v4/user/transfer`,
-															headers: {
-																"x-api-cat": process.env.API_CAT,
-																"x-api-key": process.env.API_KEY,
-																"Content-Type": "application/x-www-form-urlencoded",
-															},
-															data: detail,
-														};
-														await axios(config).then(async (response) => {
-															if (response.data.status === "error") {
-																return false;
-															}
-															db.query(
-																"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
-																["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(user.maxBonus), item.received_time.match(/\d/g).join(""), 1, item.received_time],
-																async () => {
-																	db.query(
-																		"SELECT * FROM setting WHERE type = ?",
-																		["mini_game"],
-																		async (error, setting) => {
-																			if (error) throw error;
-																			const data = await JSON.parse(setting[0].data);
-																			if (parseInt(item.amount) >= parseInt(data.amount)) {
-																				db.query(
-																					"UPDATE users SET quantity = quantity + ?, running = ? WHERE username = ?",
-																					[1, 1, user.username],
-																				);
-																				await axios.post(`${process.env.SERVER_URL}/notify`,
-																					{
-																						username: user.username,
-																						amount: parseFloat(user.maxBonus).toFixed(2),
-																					}
-																				);
-																			}
-																		}
-																	);
-																});
-														});
-													}
-												} else if (user.depositType === "ต่ำกว่า") {
-													if (parseFloat(item.amount) <= parseFloat(user.deposit)) {
-														const detail = qs.stringify({
-															username: `${process.env.UPLINE}${user.username.substring(2)}`,
-															amount: parseFloat(user.maxBonus),
-															ref: item.received_time.match(/\d/g).join(""),
-														});
-														const config = {
-															method: "POST",
-															maxBodyLength: Infinity,
-															url: `${process.env.API_URL}/v4/user/transfer`,
-															headers: {
-																"x-api-cat": process.env.API_CAT,
-																"x-api-key": process.env.API_KEY,
-																"Content-Type": "application/x-www-form-urlencoded",
-															},
-															data: detail,
-														};
-														await axios(config).then(async (response) => {
-															if (response.data.status === "error") {
-																return false;
-															}
-															db.query(
-																"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
-																["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(user.maxBonus), item.received_time.match(/\d/g).join(""), 1, item.received_time],
-																async () => {
-																	db.query(
-																		"SELECT * FROM setting WHERE type = ?",
-																		["mini_game"],
-																		async (error, setting) => {
-																			if (error) throw error;
-																			const data = await JSON.parse(setting[0].data);
-																			if (parseInt(item.amount) >= parseInt(data.amount)) {
-																				db.query(
-																					"UPDATE users SET quantity = quantity + ?, running = ? WHERE username = ?",
-																					[1, 1, user.username],
-																				);
-																				await axios.post(`${process.env.SERVER_URL}/notify`,
-																					{
-																						username: user.username,
-																						amount: parseFloat(user.maxBonus).toFixed(2),
-																					}
-																				);
+// cron.schedule("* * * * * *", async () => {
+// 	try {
+// 		db.query("SELECT * FROM deposit", async (error, deposit) => {
+// 			if (error) throw error;
+// 			const config = {
+// 				method: "GET",
+// 				url: "http://122.248.204.147:3003",
+// 			};
+// 			await axios(config).then(async (response) => {
+// 				const tw = response.data;
+// 				await tw.map(async (item) => {
+// 					db.query("SELECT * FROM setting", async (error, setting) => {
+// 						if (error) throw error;
+// 						const limitDeposit = await setting.filter((item) => item.type === "limit_deposit");
+// 						if (!limitDeposit[0]) return false;
+// 						const data = await JSON.parse(limitDeposit[0].data);
+// 						if (!deposit.map((item) => item.referenceNo).includes(item.received_time.match(/\d/g).join(""))) {
+// 							db.query("SELECT * FROM users", async (error, users) => {
+// 								if (error) throw error;
+// 								await users.map(async (user) => {
+// 									if (user.tel === item.sender) {
+// 										if (parseFloat(item.amount) < parseFloat(data.min)) {
+// 											db.query(
+// 												"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
+// 												["not-auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 0, item.received_time],
+// 												async () => {
+// 													return console.log({
+// 														username: user.username,
+// 														amount: parseFloat(item.amount),
+// 														limit: data.min,
+// 													});
+// 												});
+// 										} else if (parseFloat(item.amount) > parseFloat(data.max)) {
+// 											db.query(
+// 												"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
+// 												["not-auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 0, item.received_time],
+// 												async () => {
+// 													return console.log({
+// 														username: user.username,
+// 														amount: parseFloat(item.amount),
+// 														limit: data.max,
+// 													});
+// 												});
+// 										} else {
+// 											if (user.promotion === 1 && user.running === 0) {
+// 												if (user.depositType === "ตรงยอด") {
+// 													if (parseFloat(item.amount) === parseFloat(user.deposit)) {
+// 														const detail = qs.stringify({
+// 															username: `${process.env.UPLINE}${user.username.substring(2)}`,
+// 															amount: parseFloat(user.maxBonus),
+// 															ref: item.received_time.match(/\d/g).join(""),
+// 														});
+// 														const config = {
+// 															method: "POST",
+// 															maxBodyLength: Infinity,
+// 															url: `${process.env.API_URL}/v4/user/transfer`,
+// 															headers: {
+// 																"x-api-cat": process.env.API_CAT,
+// 																"x-api-key": process.env.API_KEY,
+// 																"Content-Type": "application/x-www-form-urlencoded",
+// 															},
+// 															data: detail,
+// 														};
+// 														await axios(config).then(async (response) => {
+// 															if (response.data.status === "error") {
+// 																return false;
+// 															}
+// 															db.query(
+// 																"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
+// 																["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(user.maxBonus), item.received_time.match(/\d/g).join(""), 1, item.received_time],
+// 																async () => {
+// 																	db.query(
+// 																		"SELECT * FROM setting WHERE type = ?",
+// 																		["mini_game"],
+// 																		async (error, setting) => {
+// 																			if (error) throw error;
+// 																			const data = await JSON.parse(setting[0].data);
+// 																			if (parseInt(item.amount) >= parseInt(data.amount)) {
+// 																				db.query(
+// 																					"UPDATE users SET quantity = quantity + ?, running = ? WHERE username = ?",
+// 																					[1, 1, user.username],
+// 																				);
+// 																				await axios.post(`${process.env.SERVER_URL}/notify`,
+// 																					{
+// 																						username: user.username,
+// 																						amount: parseFloat(user.maxBonus).toFixed(2),
+// 																					}
+// 																				);
+// 																			}
+// 																		}
+// 																	);
+// 																});
+// 														});
+// 													}
+// 												} else if (user.depositType === "ต่ำกว่า") {
+// 													if (parseFloat(item.amount) <= parseFloat(user.deposit)) {
+// 														const detail = qs.stringify({
+// 															username: `${process.env.UPLINE}${user.username.substring(2)}`,
+// 															amount: parseFloat(user.maxBonus),
+// 															ref: item.received_time.match(/\d/g).join(""),
+// 														});
+// 														const config = {
+// 															method: "POST",
+// 															maxBodyLength: Infinity,
+// 															url: `${process.env.API_URL}/v4/user/transfer`,
+// 															headers: {
+// 																"x-api-cat": process.env.API_CAT,
+// 																"x-api-key": process.env.API_KEY,
+// 																"Content-Type": "application/x-www-form-urlencoded",
+// 															},
+// 															data: detail,
+// 														};
+// 														await axios(config).then(async (response) => {
+// 															if (response.data.status === "error") {
+// 																return false;
+// 															}
+// 															db.query(
+// 																"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
+// 																["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(user.maxBonus), item.received_time.match(/\d/g).join(""), 1, item.received_time],
+// 																async () => {
+// 																	db.query(
+// 																		"SELECT * FROM setting WHERE type = ?",
+// 																		["mini_game"],
+// 																		async (error, setting) => {
+// 																			if (error) throw error;
+// 																			const data = await JSON.parse(setting[0].data);
+// 																			if (parseInt(item.amount) >= parseInt(data.amount)) {
+// 																				db.query(
+// 																					"UPDATE users SET quantity = quantity + ?, running = ? WHERE username = ?",
+// 																					[1, 1, user.username],
+// 																				);
+// 																				await axios.post(`${process.env.SERVER_URL}/notify`,
+// 																					{
+// 																						username: user.username,
+// 																						amount: parseFloat(user.maxBonus).toFixed(2),
+// 																					}
+// 																				);
 
-																			}
-																		}
-																	);
-																});
-														});
-													}
-												}
-											} else {
-												const detail = qs.stringify({
-													username: `${process.env.UPLINE}${user.username.substring(2)}`,
-													amount: parseFloat(item.amount),
-													ref: item.received_time.match(/\d/g).join(""),
-												});
-												const config = {
-													method: "POST",
-													maxBodyLength: Infinity,
-													url: `${process.env.API_URL}/v4/user/transfer`,
-													headers: {
-														"x-api-cat": process.env.API_CAT,
-														"x-api-key": process.env.API_KEY,
-														"Content-Type": "application/x-www-form-urlencoded",
-													},
-													data: detail,
-												};
-												await axios(config).then(async (response) => {
-													if (response.data.status === "error") {
-														return false;
-													}
-													db.query(
-														"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
-														["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 1, item.received_time],
-														async () => {
-															db.query(
-																"SELECT * FROM setting WHERE type = ?",
-																["mini_game"],
-																async (error, setting) => {
-																	if (error) throw error;
-																	const data = await JSON.parse(setting[0].data);
-																	if (parseInt(item.amount) >= parseInt(data.amount)) {
-																		db.query(
-																			"UPDATE users SET quantity = quantity + ?, WHERE username = ?",
-																			[1, user.username],
-																		);
-																		await axios.post(`${process.env.SERVER_URL}/notify`,
-																			{
-																				username: user.username,
-																				amount: parseFloat(item.amount).toFixed(2),
-																			}
-																		);
-																	}
-																}
-															);
-														});
-												});
-											}
-										}
-									}
-								});
-							});
-						}
-					});
-				});
-			});
-		});
-	} catch (error) {
-		console.log(error);
-	}
-});
+// 																			}
+// 																		}
+// 																	);
+// 																});
+// 														});
+// 													}
+// 												}
+// 											} else {
+// 												const detail = qs.stringify({
+// 													username: `${process.env.UPLINE}${user.username.substring(2)}`,
+// 													amount: parseFloat(item.amount),
+// 													ref: item.received_time.match(/\d/g).join(""),
+// 												});
+// 												const config = {
+// 													method: "POST",
+// 													maxBodyLength: Infinity,
+// 													url: `${process.env.API_URL}/v4/user/transfer`,
+// 													headers: {
+// 														"x-api-cat": process.env.API_CAT,
+// 														"x-api-key": process.env.API_KEY,
+// 														"Content-Type": "application/x-www-form-urlencoded",
+// 													},
+// 													data: detail,
+// 												};
+// 												await axios(config).then(async (response) => {
+// 													if (response.data.status === "error") {
+// 														return false;
+// 													}
+// 													db.query(
+// 														"INSERT INTO deposit SET type = ?, username = ?, name = ?, bankName = ?, bankNumber = ?, toBankName = ?, amount = ?, referenceNo = ?,  status = ? , createdAt = ?",
+// 														["auto", user.username, user.name, "wallet", user.tel, "wallet", parseFloat(item.amount), item.received_time.match(/\d/g).join(""), 1, item.received_time],
+// 														async () => {
+// 															db.query(
+// 																"SELECT * FROM setting WHERE type = ?",
+// 																["mini_game"],
+// 																async (error, setting) => {
+// 																	if (error) throw error;
+// 																	const data = await JSON.parse(setting[0].data);
+// 																	if (parseInt(item.amount) >= parseInt(data.amount)) {
+// 																		db.query(
+// 																			"UPDATE users SET quantity = quantity + ?, WHERE username = ?",
+// 																			[1, user.username],
+// 																		);
+// 																		await axios.post(`${process.env.SERVER_URL}/notify`,
+// 																			{
+// 																				username: user.username,
+// 																				amount: parseFloat(item.amount).toFixed(2),
+// 																			}
+// 																		);
+// 																	}
+// 																}
+// 															);
+// 														});
+// 												});
+// 											}
+// 										}
+// 									}
+// 								});
+// 							});
+// 						}
+// 					});
+// 				});
+// 			});
+// 		});
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// });
 
 export default TransferController;

@@ -14,9 +14,10 @@ const AuthController = {
                     if (results.length > 0) {
                         return res.send({ status: "error", message: "มีผู้ดูแลระบบแล้ว!" });
                     }
+                    // Assuming 'creator' is a required field, provide a value for it in the INSERT query
                     db.query(
-                        "INSERT INTO admin (username, password, role) VALUES (?, ?, ?)",
-                        [req.body.username, bcrypt.hashSync(req.body.password, 8), "admin"],
+                        "INSERT INTO admin (username, password, role, creator) VALUES (?, ?, ?, ?)",
+                        [req.body.username, bcrypt.hashSync(req.body.password, 10), "admin", "some_creator_value"],
                         (error, _) => {
                             if (error) throw error;
                             return res.send({ status: "success", message: "ลงทะเบียนสำเร็จ!" });
@@ -38,7 +39,7 @@ const AuthController = {
                 (error, results) => {
                     if (error) throw error;
                     if (results.length === 0) {
-                        return res.send({ status: "error", message: "ยูสเซอร์เนมไม่ถูกต้อง!" }); 
+                        return res.send({ status: "error", message: "ยูสเซอร์เนมไม่ถูกต้อง!" });
                     }
                     const isPasswordMatch = bcrypt.compareSync(
                         req.body.password,
@@ -55,9 +56,9 @@ const AuthController = {
                         { expiresIn: "1d" },
                     );
                     const data = {
-						ip: req.body.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress,
-						agent: req.headers["user-agent"],
-					};
+                        ip: req.body.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress,
+                        agent: req.headers["user-agent"],
+                    };
                     db.query(
                         "INSERT INTO logs (username, type, data) VALUES (?, ?, ?)",
                         [results[0].username, "login", JSON.stringify(data)],
@@ -66,7 +67,7 @@ const AuthController = {
                             res.header("Authorization", `Bearer ${token}`);
                             res.send({ status: "success", token });
                             await axios.get(
-                                `${process.env.SERVER_URL}/api/v1/users/logs/all`,
+                                `${process.env.SERVER_URL}/users/logs/all`,
                             );
                         },
                     );

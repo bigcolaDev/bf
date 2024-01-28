@@ -1,4 +1,4 @@
-import mysql from "mysql";
+import mysql from "mysql2";
 
 // const db = mysql.createConnection({
 // 	host: "localhost",
@@ -9,14 +9,18 @@ import mysql from "mysql";
 
 //DB Server
 const db = mysql.createConnection({
-	host: "134.209.96.165",
-	user: "_root",
-	password: "Zr0u8p5~4",
-	database: "betflix"
+	host: '13.211.31.132',     // หรือ IP ของ MySQL server
+	user: 'admin',           // ชื่อผู้ใช้ MySQL
+	password: 'Test123456', // รหัสผ่าน MySQL
+	database: 'betflix'     // ชื่อฐานข้อมูล MySQL
 });
 
-db.connect((error) => {
-	if (error) throw error;
+// เชื่อมต่อ MySQL
+db.connect((err) => {
+	if (err) {
+		console.log(err);
+	}
 });
+
 
 export default db;

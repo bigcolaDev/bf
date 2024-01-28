@@ -7,18 +7,18 @@ import AdminMiddleware from "../middlewares/admin.middleware.js";
 import TransferController from "../controllers/transfer.controller.js";
 
 // Balance
-// Endpoint http://localhost:5000/api/v1/transfer/balance
+// Endpoint http://localhost:5000/transfer/balance
 // Method GET
 // Access Private
 router.get("/transfer/balance", AdminMiddleware.checkToken, TransferController.Balance);
 
 // Deposit
-// Endpoint http://localhost:5000/api/v1/transfer/deposit
+// Endpoint http://localhost:5000/transfer/deposit
 // Method POST
 // Access Public
 // router.post("/transfer/deposit", UserMiddleware.checkToken, TransferController.Deposit); 
 
-// Endpoint http://localhost:5000/api/v1/transfer/detect-bank-account
+// Endpoint http://localhost:5000/transfer/detect-bank-account
 // Method POST
 // Access Public
 router.post(
@@ -27,7 +27,7 @@ router.post(
 	TransferController.DetectBankAccount,
 );
 
-// Endpoint http://localhost:5000/api/v1/hanlder/transfer 
+// Endpoint http://localhost:5000/hanlder/transfer 
 // Method POST
 // Access Private
 router.post(
@@ -36,7 +36,7 @@ router.post(
 	TransferController.HanlderTransfer,
 );
 
-// Endpoint http://localhost:5000/api/v1/hanlder/transfer/list
+// Endpoint http://localhost:5000/hanlder/transfer/list
 // Method GET
 // Access Private
 router.get(
@@ -45,7 +45,7 @@ router.get(
 	TransferController.HanlderTransferList,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/deposit/hanlder
+// Endpoint http://localhost:5000/transfer/deposit/hanlder
 // Method POST
 // Access Private
 router.post(
@@ -54,7 +54,7 @@ router.post(
 	TransferController.HanlderDeposit,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/withdraw/hanlder
+// Endpoint http://localhost:5000/transfer/withdraw/hanlder
 // Method POST
 // Access Private
 router.post(
@@ -63,7 +63,7 @@ router.post(
 	TransferController.HanlderWithdraw,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/list/deposit
+// Endpoint http://localhost:5000/transfer/list/deposit
 // Method POST
 // Access Private
 router.post(
@@ -73,7 +73,7 @@ router.post(
 );
 
 // Deposit
-// Endpoint http://localhost:5000/api/v1/list/deposit  
+// Endpoint http://localhost:5000/list/deposit  
 // Method GET
 // Access Private
 router.get(
@@ -82,13 +82,13 @@ router.get(
 	TransferController.DepositList,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/withdraw
+// Endpoint http://localhost:5000/transfer/withdraw
 // Method POST
 // Access Public
 router.post("/transfer/withdraw", UserMiddleware.checkToken, TransferController.Withdraw);
 
 
-// Endpoint http://localhost:5000/api/v1/list/withdraw
+// Endpoint http://localhost:5000/list/withdraw
 // Method POST
 // Access Private
 router.post(
@@ -98,7 +98,7 @@ router.post(
 );
 
 // withdrawList
-// Endpoint http://localhost:5000/api/v1/list/withdraw/all
+// Endpoint http://localhost:5000/list/withdraw/all
 // Method GET
 // Access Private
 router.get(
@@ -107,12 +107,12 @@ router.get(
 	TransferController.withdrawList,
 );
 
-//Endpoint http://localhost:5000/api/v1/history/transfers
+//Endpoint http://localhost:5000/history/transfers
 // Method POST
 // Access Public
 router.post("/history/transfers", TransferController.TransferHistory); 
 
-//Endpointhttp://localhost:5000/api/v1/history/transfers/all
+//Endpointhttp://localhost:5000/history/transfers/all
 // Method POST
 // Access Private
 router.post(
@@ -121,7 +121,7 @@ router.post(
 	TransferController.TransferHistoryAll,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/deposit/create
+// Endpoint http://localhost:5000/transfer/deposit/create
 // Method POST
 // Access Private
 router.post(
@@ -130,7 +130,7 @@ router.post(
 	TransferController.CreateDeposit,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/withdraw/create
+// Endpoint http://localhost:5000/transfer/withdraw/create
 // Method POST
 // Access Private
 router.post(
@@ -139,7 +139,7 @@ router.post(
 	TransferController.CreateWithdraw,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/deposit/list
+// Endpoint http://localhost:5000/transfer/deposit/list
 // Method GET
 // Access Private
 router.get(
@@ -148,7 +148,7 @@ router.get(
 	TransferController.CreateDepositList,
 );
 
-// Endpoint http://localhost:5000/api/v1/transfer/withdraw/list
+// Endpoint http://localhost:5000/transfer/withdraw/list
 // Method GET
 // Access Private
 router.get(

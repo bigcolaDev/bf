@@ -25,7 +25,7 @@ const UsersController = {
 							headers: {
 								"x-api-cat": process.env.API_CAT,
 								"x-api-key": process.env.API_KEY,
-								"Content-Type": "application/x-www-form-urlencoded", 
+								"Content-Type": "application/x-www-form-urlencoded",
 							},
 							data: data,
 						};
@@ -226,7 +226,7 @@ const UsersController = {
 										[req.body.editor, req.body.type, JSON.stringify(data)]);
 								}
 								await axios.post(
-									`${process.env.SERVER_URL}/api/v1/users/current`,
+									`${process.env.SERVER_URL}/users/current`,
 									{
 										username: req.body.username,
 									},
@@ -482,7 +482,7 @@ const UsersController = {
 									async (error, _) => {
 										if (error) throw error;
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/current`,
+											`${process.env.SERVER_URL}/users/current`,
 											{
 												username: req.body.username,
 											},
@@ -493,7 +493,7 @@ const UsersController = {
 											}
 										);
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/balance`,
+											`${process.env.SERVER_URL}/users/balance`,
 											{
 												username: req.body.username,
 											},
@@ -504,7 +504,7 @@ const UsersController = {
 											}
 										);
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/logs`,
+											`${process.env.SERVER_URL}/users/logs`,
 											{
 												username: req.body.username,
 											},
@@ -590,7 +590,7 @@ const UsersController = {
 											async (error, _) => {
 												if (error) throw error;
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/current`,
+													`${process.env.SERVER_URL}/users/current`,
 													{
 														username: req.body.username,
 													},
@@ -601,7 +601,7 @@ const UsersController = {
 													}
 												);
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/balance`,
+													`${process.env.SERVER_URL}/users/balance`,
 													{
 														username: req.body.username,
 													},
@@ -612,7 +612,7 @@ const UsersController = {
 													}
 												);
 												await axios.post(
-													`${process.env.SERVER_URL}/api/v1/users/logs`,
+													`${process.env.SERVER_URL}/users/logs`,
 													{
 														username: req.body.username,
 													},
@@ -693,7 +693,7 @@ const UsersController = {
 									async (error, _) => {
 										if (error) throw error;
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/current`,
+											`${process.env.SERVER_URL}/users/current`,
 											{
 												username: req.body.username,
 											},
@@ -704,7 +704,7 @@ const UsersController = {
 											}
 										);
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/balance`,
+											`${process.env.SERVER_URL}/users/balance`,
 											{
 												username: req.body.username,
 											},
@@ -715,7 +715,7 @@ const UsersController = {
 											}
 										);
 										await axios.post(
-											`${process.env.SERVER_URL}/api/v1/users/logs`,
+											`${process.env.SERVER_URL}/users/logs`,
 											{
 												username: req.body.username,
 											},
